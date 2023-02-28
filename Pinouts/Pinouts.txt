@@ -1,0 +1,6 @@
+Master:
+1. Keypad: (Row pins: 2,4,12,13
+	    Column Pins: 14,15,25,26)
+2. LCD: (SDA: 21, SCL: 22)
+3. HC12: (HC12 TX: 16, HC12 RX: 17 --> UART2)
+4. RFID: ()
