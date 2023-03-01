@@ -34,8 +34,7 @@ const uint8_t unit2_ID[4] = {0x2C,0x5A,0xAE,0x49};
 TaskHandle_t nodeTaskHandle;
 QueueHandle_t nodeToAppQueue;
  
-uint8_t rfidBuffer[4] = {0};
-int unitNumber = -1; 
+uint8_t rfidBuffer[4] = {0}; 
 
 enum unitNumber_t
 {
@@ -65,7 +64,7 @@ unitNumber_t selectCardPresent(void)
     {
       unit = UNIT1;
     }
-    else if(rfidBuffer[i] = unit2_ID[i])
+    else if(rfidBuffer[i] == unit2_ID[i])
     {
       unit = UNIT2;
     }
@@ -81,9 +80,10 @@ void Get_TagID(uint8_t* IdBuffer, uint8_t bufferSize) {
   for (uint8_t i = 0; i < bufferSize; i++)
   {
     rfidBuffer[i] = IdBuffer[i];
-//    Serial.print(IdBuffer[i] < 0x10 ? " 0" : " ");
-//    Serial.print(IdBuffer[i], HEX);
+    Serial.print(IdBuffer[i] < 0x10 ? " 0" : " ");
+    Serial.print(IdBuffer[i], HEX);
   }
+  Serial.println();
 }
 
 void setup() {
@@ -111,6 +111,7 @@ void loop() {
 
 void ApplicationTask(void* pvParameters)
 { 
+  int unitNumber = int(unitNumber_t::INVALID);
   uint8_t rowPins[NUMBER_OF_ROWS] = {2,4,12,13};
   uint8_t columnPins[NUMBER_OF_COLUMNS] = {14,15,25,26};
 
@@ -150,30 +151,32 @@ void ApplicationTask(void* pvParameters)
     {
       Serial.println(c);
     }
-//    if(rfid.PICC_IsNewCardPresent())
-//    {
-//      if(rfid.PICC_ReadCardSerial())
-//      {
-//        Serial.print(F("RFID Tag UID:"));
-//        Get_TagID(rfid.uid.uidByte, rfid.uid.size);
-//        unitNumber = selectCardPresent();
-//        Serial.println("");
-//        rfid.PICC_HaltA(); // Halt PICC
-//      }
-//      if(unitNumber != INVALID)
-//      {
-//        switch(unitNumber)
-//        {
-//          case UNIT1:
-//            Serial.println("UNIT1");
-//          break;
-//    
-//          case UNIT2:
-//            Serial.println("UNIT2");
-//          break;
-//        }
-//      }
-//    }
+    if(rfid.PICC_IsNewCardPresent())
+    {
+      if(rfid.PICC_ReadCardSerial())
+      {
+        Serial.print(F("RFID Tag UID:"));
+        Get_TagID(rfid.uid.uidByte, rfid.uid.size);
+        unitNumber = (int)selectCardPresent();
+        Serial.println("");
+        rfid.PICC_HaltA(); // Halt PICC
+      }
+      if(unitNumber != INVALID)
+      {
+        switch(unitNumber)
+        {
+          case UNIT1:
+            Serial.println("UNIT1");
+          break;
+    
+          case UNIT2:
+            Serial.println("UNIT2");
+          break;
+        }
+      }
+      else
+        Serial.println("INVALID");
+    }
   } 
 }
 

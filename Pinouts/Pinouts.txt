@@ -3,4 +3,5 @@ Master:
 	    Column Pins: 14,15,25,26)
 2. LCD: (SDA: 21, SCL: 22)
 3. HC12: (HC12 TX: 16, HC12 RX: 17 --> UART2)
-4. RFID: ()
+4. RFID: (VCC: 3.3V, NSS: 5, RST: 27, MOSI: 23
+          MISO: 19, SCK: 18)
