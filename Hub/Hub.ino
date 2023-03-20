@@ -1,8 +1,6 @@
-#include <SPI.h>
-#include <MFRC522.h>
-#include <LiquidCrystal_I2C.h>
 #include "keypad.h"
 #include "hc12.h"
+#include "hmi.h"
 
 //RTOS
 #if CONFIG_FREERTOS_UNICORE
@@ -91,7 +89,7 @@ void setup() {
   setCpuFrequencyMhz(80);
   Serial.begin(115200);
   //Create Tasks
-  xTaskCreatePinnedToCore(ApplicationTask,"",7000,NULL,1,NULL,ARDUINO_RUNNING_CORE);
+  xTaskCreatePinnedToCore(ApplicationTask,"",30000,NULL,1,NULL,ARDUINO_RUNNING_CORE);
   xTaskCreatePinnedToCore(NodeTask,"",7000,NULL,1,&nodeTaskHandle,ARDUINO_RUNNING_CORE);
   nodeToAppQueue = xQueueCreate(1,sizeof(pwr_t));
   if(nodeToAppQueue != NULL)
@@ -117,6 +115,7 @@ void ApplicationTask(void* pvParameters)
 
   static Keypad keypad(rowPins,columnPins);
   static LiquidCrystal_I2C lcd(0x27,20,4);
+  static HMI hmi(&lcd,&keypad);
   static MFRC522 rfid(SS_PIN, RST_PIN); // Instance of the class
   MFRC522::MIFARE_Key key;
   SPI.begin(); // Init SPI bus
@@ -137,46 +136,49 @@ void ApplicationTask(void* pvParameters)
   lcd.print("--Initializing....");
   delay(2000);
   lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("Place RFID tag on");
-  lcd.setCursor(0,1);
-  lcd.print("RFID scanner...");
-  lcd.blink();
+//  lcd.clear();
+//  lcd.setCursor(0,0);
+//  lcd.print("Place RFID tag on");
+//  lcd.setCursor(0,1);
+//  lcd.print("RFID scanner...");
+//  lcd.blink();
   //vTaskResume(nodeTaskHandle);
    
   for(;;)
   {
-    char c = keypad.GetChar();
-    if(c != '\0')
-    {
-      Serial.println(c);
-    }
-    if(rfid.PICC_IsNewCardPresent())
-    {
-      if(rfid.PICC_ReadCardSerial())
-      {
-        Serial.print(F("RFID Tag UID:"));
-        Get_TagID(rfid.uid.uidByte, rfid.uid.size);
-        unitNumber = (int)selectCardPresent();
-        Serial.println("");
-        rfid.PICC_HaltA(); // Halt PICC
-      }
-      if(unitNumber != INVALID)
-      {
-        switch(unitNumber)
-        {
-          case UNIT1:
-            Serial.println("UNIT1");
-          break;
-    
-          case UNIT2:
-            Serial.println("UNIT2");
-          break;
-        }
-      }
-      else
-        Serial.println("INVALID");
-    }
+    hmi.Execute();
+    vTaskDelay(pdMS_TO_TICKS(50));
+//    char c = keypad.GetChar();
+//    if(c != '\0')
+//    {
+//      Serial.println(c);
+//    }
+//    if(rfid.PICC_IsNewCardPresent())
+//    {
+//      if(rfid.PICC_ReadCardSerial())
+//      {
+//        Serial.print(F("RFID Tag UID:"));
+//        Get_TagID(rfid.uid.uidByte, rfid.uid.size);
+//        unitNumber = (int)selectCardPresent();
+//        Serial.println("");
+//        rfid.PICC_HaltA(); // Halt PICC
+//      }
+//      if(unitNumber != INVALID)
+//      {
+//        switch(unitNumber)
+//        {
+//          case UNIT1:
+//            Serial.println("UNIT1");
+//          break;
+//    
+//          case UNIT2:
+//            Serial.println("UNIT2");
+//          break;
+//        }
+//      }
+//      else
+//        Serial.println("INVALID");
+//    }
   } 
 }
 
