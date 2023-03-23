@@ -1,19 +1,17 @@
 #include <Arduino.h>
+#include <SoftwareSerial.h>
 #include "hc12.h"
 
-#define RX_DATA_EXPECTED_LEN 8 
+#define RX_DATA_EXPECTED_LEN 4
 /*
  * @brief Initializes HC12 transceiver
 */
-HC12::HC12(HardwareSerial* serial,uint8_t Pin,
-         uint32_t baudRate,
-         int8_t hc12Tx,
-         int8_t hc12Rx)
+HC12::HC12(SoftwareSerial* serial,uint8_t Pin,uint32_t baudRate)
 {
   //Initialize private variables
   port = serial;
   setPin = Pin;
-  port->begin(baudRate,SERIAL_8N1,hc12Tx,hc12Rx);
+  port->begin(baudRate);
   pinMode(setPin, OUTPUT);
   digitalWrite(setPin, HIGH);
   rxDataCounter = 0;
@@ -41,21 +39,21 @@ void HC12::EncodeData(uint16_t dataToEncode,TxDataId id)
 }
 
 /**
- * @brief Sets the HC12 transceiver to a particular channel
- * @param AT_Cmd: AT Command to set the HC12 to a particular channel
+ * @brief Sets the HC12 transceiver to a desired channel(frequency)
+ * @param channelNum: Desired channel the HC12 should be set to
 */
-void HC12::SetChannel(const char* AT_Cmd)
+void HC12::SetChannel(char* channelNum)
 {
   digitalWrite(setPin, LOW);
-  vTaskDelay(pdMS_TO_TICKS(40)); //wait for command mode to engage
-  port->print(AT_Cmd);
-  while(port->available() == 0){} //wait for response
+  delay(40); //wait for command mode to engage
+  port->print(channelNum);
+  while(port->available() == 0){}
   while(port->available() > 0)
   {
     port->read();
   }
   digitalWrite(setPin,HIGH);
-  vTaskDelay(pdMS_TO_TICKS(80));
+  delay(80);
 }
 
 /**
@@ -87,12 +85,16 @@ bool HC12::ReceivedData(void)
     rxBuffer[rxDataCounter] = port->read();
     rxDataCounter++;
   }
-  if(rxDataCounter == RX_DATA_EXPECTED_LEN)
+  if(rxDataCounter == BufferSize::RX)
+  {
+    rxDataCounter = 0;
+    rxDone = false;
+  }
+  else if(rxDataCounter == RX_DATA_EXPECTED_LEN)
   {
     rxDataCounter = 0;
     rxDone = true;
   }
-
   return rxDone;
 }
 

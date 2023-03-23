@@ -14,7 +14,7 @@ class HC12
 
   public:
     enum {QUERY = 0xAA, ACK = 0xBB, Node1Addr = 0xCC,
-          Node2Addr = 0xDD, Node3Addr = 0xEE};
+          Node2Addr = 0xDD};
     enum TxDataId
     {
       DATA_QUERY = 0,

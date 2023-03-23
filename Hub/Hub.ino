@@ -23,7 +23,7 @@
 
 #define SS_PIN 5
 #define RST_PIN 27
-#define NO_OF_NODES 2
+
 
 const uint8_t unit1_ID[4] = {0x64,0xFA,0x76,0x89};
 const uint8_t unit2_ID[4] = {0x2C,0x5A,0xAE,0x49};
@@ -188,13 +188,7 @@ void NodeTask(void* pvParameters)
   const uint8_t setPin = 15;
   static HC12 hc12(&Serial2,setPin);
   static pwr_t pwr;
-  static uint8_t Node[NO_OF_NODES] = {HC12::Node1Addr,HC12::Node2Addr};
-  enum Nodes
-  {
-    NODE1 = 0,
-    NODE2
-  };
-  uint8_t node = (uint8_t)NODE1;
+  uint8_t node = HC12::Node1Addr;
   uint32_t prevTime = millis();
   hc12.SetChannel(CHANNEL_15);
   
@@ -202,10 +196,10 @@ void NodeTask(void* pvParameters)
   {
     if(millis() - prevTime >= 1500)
     {
-      hc12.EncodeData(Node[node],HC12::TxDataId::DEST_ADDR);
+      hc12.EncodeData(node,HC12::TxDataId::DEST_ADDR);
       hc12.EncodeData(HC12::QUERY,HC12::TxDataId::DATA_QUERY);
       hc12.TransmitData();
-      node = (node + 1) % 2;
+      node = (node == HC12::Node1Addr) ? HC12::Node2Addr : HC12::Node1Addr;
       prevTime = millis();
     }
     if(hc12.ReceivedData())
