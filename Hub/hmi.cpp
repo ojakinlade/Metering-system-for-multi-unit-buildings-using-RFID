@@ -41,6 +41,16 @@ void HMI::DisplayUserGuidePage(void)
   HMI::DisplayRowHeadings(heading);
 }
 
+void HMI::DisplayPlaceTagPage(void)
+{
+  char heading1[] = "Place your RFID card";
+  char heading2[] = "close to the sensor";
+  char heading3[] = "";
+  char heading4[] = "";
+  char* heading[] = {heading1,heading2,heading3,heading4};
+  HMI::DisplayRowHeadings(heading);
+}
+
 void HMI::StateFunc_UserGuidePage(void)
 {
   HMI::DisplayUserGuidePage();
@@ -68,6 +78,12 @@ void HMI::StateFunc_MenuPage(void)
   }
 }
 
+void HMI::StateFunc_PlaceTagPage(void)
+{
+  HMI::DisplayPlaceTagPage();
+  //Add code to get the RFID tag bytes
+}
+
 HMI::HMI(LiquidCrystal_I2C* lcdPtr,Keypad* keypadPtr)
 {
   //Initialize private variables
@@ -84,8 +100,23 @@ void HMI::Execute(void)
     case ST_MENUPAGE:
       HMI::StateFunc_MenuPage();
       break;
+    case ST_PLACETAGPAGE:
+      HMI::StateFunc_PlaceTagPage();
+      break;
     case ST_USERGUIDEPAGE:
       HMI::StateFunc_UserGuidePage();
       break;
   }
+}
+
+void HMI::RegisterCallback(UnitIndex(*ValidateRfidTag)(uint8_t*,uint8_t))
+{
+  this->ValidateRfidTag = ValidateRfidTag;
+  Serial.println("Successfully registered <ValidateRfid> callback");
+}
+
+void HMI::RegisterCallback(void(*GetPowerParam)(UnitIndex,float*,float*))
+{
+  this->GetPowerParam = GetPowerParam;
+  Serial.println("Successfully registered <GetPowerParam> callback");
 }

@@ -1,3 +1,6 @@
+#include <SPI.h>
+#include <MFRC522.h>
+#include <LiquidCrystal_I2C.h>
 #include "keypad.h"
 #include "hc12.h"
 #include "hmi.h"
@@ -34,12 +37,12 @@ QueueHandle_t nodeToAppQueue;
  
 uint8_t rfidBuffer[4] = {0}; 
 
-enum unitNumber_t
-{
-  INVALID = -1,
-  UNIT1 = 0,
-  UNIT2
-};
+//enum unitNumber_t
+//{
+//  INVALID = -1,
+//  UNIT1 = 0,
+//  UNIT2
+//};
 
 typedef struct
 {
@@ -53,26 +56,26 @@ typedef struct
  * @brief: Selects the Unit whose card is present on the scanner
  * @return: Returns the unit number whose card is present on the scanner
 */
-unitNumber_t selectCardPresent(void)
-{
-  unitNumber_t unit = INVALID;
-  for(uint8_t i = 0; i < 4; i++)
-  {
-    if(rfidBuffer[i] == unit1_ID[i])
-    {
-      unit = UNIT1;
-    }
-    else if(rfidBuffer[i] == unit2_ID[i])
-    {
-      unit = UNIT2;
-    }
-    else
-    {
-      unit = INVALID;
-    }
-  }
-  return unit;
-}
+//unitNumber_t selectCardPresent(void)
+//{
+//  unitNumber_t unit = INVALID;
+//  for(uint8_t i = 0; i < 4; i++)
+//  {
+//    if(rfidBuffer[i] == unit1_ID[i])
+//    {
+//      unit = UNIT1;
+//    }
+//    else if(rfidBuffer[i] == unit2_ID[i])
+//    {
+//      unit = UNIT2;
+//    }
+//    else
+//    {
+//      unit = INVALID;
+//    }
+//  }
+//  return unit;
+//}
 
 void Get_TagID(uint8_t* IdBuffer, uint8_t bufferSize) {
   for (uint8_t i = 0; i < bufferSize; i++)
@@ -109,10 +112,8 @@ void loop() {
 
 void ApplicationTask(void* pvParameters)
 { 
-  int unitNumber = int(unitNumber_t::INVALID);
   uint8_t rowPins[NUMBER_OF_ROWS] = {2,4,12,13};
   uint8_t columnPins[NUMBER_OF_COLUMNS] = {14,15,25,26};
-
   static Keypad keypad(rowPins,columnPins);
   static LiquidCrystal_I2C lcd(0x27,20,4);
   static HMI hmi(&lcd,&keypad);
@@ -120,6 +121,9 @@ void ApplicationTask(void* pvParameters)
   MFRC522::MIFARE_Key key;
   SPI.begin(); // Init SPI bus
   rfid.PCD_Init(); // Init RC522 
+
+  hmi.RegisterCallback(ValidateRfidTag);
+  hmi.RegisterCallback(GetPowerParam);
 
   lcd.init();
   lcd.backlight();
@@ -249,4 +253,24 @@ void NodeTask(void* pvParameters)
       }
     }
   }
+}
+
+/**
+ * @brief
+ * @param
+ * @param
+*/
+UnitIndex ValidateRfidTag(uint8_t* rfidTagBuffer,uint8_t bufferSize)
+{
+  
+}
+
+/**
+ * @brief
+ * @param
+ * @param
+*/
+void GetPowerParam(UnitIndex unitIndex,float* pwrPtr,float* kwhPtr)
+{
+  
 }
