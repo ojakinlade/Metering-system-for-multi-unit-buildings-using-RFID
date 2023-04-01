@@ -1,10 +1,23 @@
 #include <Arduino.h>
+#include <SPI.h>
+#include <MFRC522.h>
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h> //Version 1.1.2
 #include "keypad.h"
 #include "hmi.h"
 
 const uint8_t numOfRows = 4;
+
+void HMI::Get_TagID(uint8_t* IdBuffer, uint8_t bufferSize) 
+{
+  for (uint8_t i = 0; i < bufferSize; i++)
+  {
+    rfidBuffer[i] = IdBuffer[i];
+    Serial.print(IdBuffer[i] < 0x10 ? " 0" : " ");
+    Serial.print(IdBuffer[i], HEX);
+  }
+  Serial.println();
+}
 
 void HMI::ChangeStateTo(State nextState)
 {
@@ -41,12 +54,39 @@ void HMI::DisplayUserGuidePage(void)
   HMI::DisplayRowHeadings(heading);
 }
 
+void HMI::DisplayLoginError(void)
+{
+  lcdPtr->clear();
+  lcdPtr->print("LOGIN ERROR!!");
+  lcdPtr->setCursor(0,1);
+  lcdPtr->print("CARD NOT RECOGNIZED");
+}
+
+void HMI::DisplayLoginSuccess(void)
+{
+  lcdPtr->clear();
+  lcdPtr->print("LOGIN SUCCESSFUL!");
+  lcdPtr->setCursor(0,1);
+  lcdPtr->print("WELCOME UNIT: ");
+  lcdPtr->print(unitIndex + 1);
+}
+
 void HMI::DisplayPlaceTagPage(void)
 {
   char heading1[] = "Place your RFID card";
   char heading2[] = "close to the sensor";
   char heading3[] = "";
   char heading4[] = "";
+  char* heading[] = {heading1,heading2,heading3,heading4};
+  HMI::DisplayRowHeadings(heading);
+}
+
+void HMI::DisplayPwrInfoPage(void)
+{
+  char heading1[] = "  POWER INFO  ";
+  char heading2[] = "PWR: ";
+  char heading3[] = "KWH:";
+  char heading4[] = "Amount due(N): ";
   char* heading[] = {heading1,heading2,heading3,heading4};
   HMI::DisplayRowHeadings(heading);
 }
@@ -70,7 +110,7 @@ void HMI::StateFunc_MenuPage(void)
   switch(key)
   {
     case '1':
-      HMI::ChangeStateTo(ST_PWRINFOPAGE);
+      HMI::ChangeStateTo(ST_PLACETAGPAGE);
       break;
     case '2':
       HMI::ChangeStateTo(ST_USERGUIDEPAGE);
@@ -82,14 +122,61 @@ void HMI::StateFunc_PlaceTagPage(void)
 {
   HMI::DisplayPlaceTagPage();
   //Add code to get the RFID tag bytes
+  if(rfidPtr->PICC_IsNewCardPresent())
+  {
+    if(rfidPtr->PICC_ReadCardSerial())
+    {
+      Serial.print(F("RFID Tag UID:"));
+      Get_TagID(rfidPtr->uid.uidByte, rfidPtr->uid.size);
+      unitIndex = ValidateRfidTag(rfidBuffer,RFID_BUFFER_SIZE);
+      Serial.println(unitIndex);
+      if(unitIndex == UNIT_UNKNOWN)
+      {
+        HMI::DisplayLoginError();
+        vTaskDelay(pdMS_TO_TICKS(3000));
+        HMI::ChangeStateTo(ST_MENUPAGE);
+      }
+      else
+      {
+        HMI::DisplayLoginSuccess();
+        vTaskDelay(pdMS_TO_TICKS(3000));
+        HMI::ChangeStateTo(ST_PWRINFOPAGE);
+      }
+      rfidPtr->PICC_HaltA(); // Halt PICC
+    }
+  }
+  char key = keypadPtr->GetChar();
+  switch(key)
+  {
+    case 'B':
+      HMI::ChangeStateTo(ST_MENUPAGE);
+      break;
+  }
 }
 
-HMI::HMI(LiquidCrystal_I2C* lcdPtr,Keypad* keypadPtr)
+void HMI::StateFunc_PwrInfoPage(void)
+{
+  HMI::DisplayPwrInfoPage();
+  char key = keypadPtr->GetChar();
+  switch(key)
+  {
+    case 'B':
+      HMI::ChangeStateTo(ST_MENUPAGE);
+      break;
+  }
+}
+
+HMI::HMI(LiquidCrystal_I2C* lcdPtr,Keypad* keypadPtr,MFRC522* rfidPtr)
 {
   //Initialize private variables
   this->lcdPtr = lcdPtr;
   this->keypadPtr = keypadPtr;
+  this->rfidPtr = rfidPtr;
   currentState = ST_MENUPAGE;
+  for(uint8_t i = 0; i < RFID_BUFFER_SIZE; i++)
+  {
+    rfidBuffer[i] = 0;
+  }
 }
 
 
@@ -105,6 +192,9 @@ void HMI::Execute(void)
       break;
     case ST_USERGUIDEPAGE:
       HMI::StateFunc_UserGuidePage();
+      break;
+    case ST_PWRINFOPAGE:
+      HMI::StateFunc_PwrInfoPage();
       break;
   }
 }
