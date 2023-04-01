@@ -33,7 +33,7 @@ const uint8_t unit2_ID[4] = {0x2C,0x5A,0xAE,0x49};
 
 //RTOS Handle(s)
 TaskHandle_t nodeTaskHandle;
-QueueHandle_t nodeToAppQueue;
+QueueHandle_t nodeToGetPwrParam;
 
 typedef struct
 {
@@ -50,14 +50,14 @@ void setup() {
   //Create Tasks
   xTaskCreatePinnedToCore(ApplicationTask,"",30000,NULL,1,NULL,ARDUINO_RUNNING_CORE);
   xTaskCreatePinnedToCore(NodeTask,"",7000,NULL,1,&nodeTaskHandle,ARDUINO_RUNNING_CORE);
-  nodeToAppQueue = xQueueCreate(1,sizeof(pwr_t));
-  if(nodeToAppQueue != NULL)
+  nodeToGetPwrParam = xQueueCreate(1,sizeof(pwr_t));
+  if(nodeToGetPwrParam != NULL)
   {
-    Serial.println("--Node-Application Queue created successfully");
+    Serial.println("--Node-GetPowerParam Queue created successfully");
   }
   else
   {
-    Serial.println("--Node-Application Queue creation failed");
+    Serial.println("--Node-GetPowerParam Queue creation failed");
   }
 }
 
@@ -78,6 +78,7 @@ void ApplicationTask(void* pvParameters)
   SPI.begin(); // Init SPI bus
   rfid.PCD_Init(); // Init RC522 
 
+  //Callbacks
   hmi.RegisterCallback(ValidateRfidTag);
   hmi.RegisterCallback(GetPowerParam);
 
@@ -96,36 +97,12 @@ void ApplicationTask(void* pvParameters)
   lcd.print("--Initializing....");
   delay(2000);
   lcd.clear();
-//  lcd.clear();
-//  lcd.setCursor(0,0);
-//  lcd.print("Place RFID tag on");
-//  lcd.setCursor(0,1);
-//  lcd.print("RFID scanner...");
-//  lcd.blink();
   //vTaskResume(nodeTaskHandle);
    
   for(;;)
   {
     hmi.Execute();
     vTaskDelay(pdMS_TO_TICKS(50));
-
-//    
-//      if(unitNumber != INVALID)
-//      {
-//        switch(unitNumber)
-//        {
-//          case UNIT1:
-//            Serial.println("UNIT1");
-//          break;
-//    
-//          case UNIT2:
-//            Serial.println("UNIT2");
-//          break;
-//        }
-//      }
-//      else
-//        Serial.println("INVALID");
-//    }
   } 
 }
 
@@ -164,13 +141,13 @@ void NodeTask(void* pvParameters)
           Serial.print("Node 1 Kwh: ");
           Serial.println(pwr.node1Kwh);
 
-          if(xQueueSend(nodeToAppQueue,&pwr,0) == pdPASS)
+          if(xQueueSend(nodeToGetPwrParam,&pwr,0) == pdPASS)
           {
-            Serial.println("--Data from Node 1 successfully sent to Application Task");
+            Serial.println("--Data from Node 1 successfully sent to GetPowerParam");
           }
           else
           {
-            Serial.println("--Sending from Node 1 data to Application Task failed");
+            Serial.println("--Sending from Node 1 data to GetPowerParam failed");
           }
         }
         else if(hc12.DecodeData(HC12::RxDataId::SRC_ADDR) == HC12::Node2Addr)
@@ -184,13 +161,13 @@ void NodeTask(void* pvParameters)
           Serial.print("Node 2 Kwh: ");
           Serial.println(pwr.node2Kwh);
 
-          if(xQueueSend(nodeToAppQueue,&pwr,0) == pdPASS)
+          if(xQueueSend(nodeToGetPwrParam,&pwr,0) == pdPASS)
           {
-            Serial.println("--Data from Node 2 successfully sent to Application Task");
+            Serial.println("--Data from Node 2 successfully sent to GetPowerParam");
           }
           else
           {
-            Serial.println("--Sending from Node 2 data to Application Task failed");
+            Serial.println("--Sending from Node 2 data to GetPowerParam failed");
           }
         }
       }
@@ -200,8 +177,8 @@ void NodeTask(void* pvParameters)
 
 /**
  * @brief Selects the Unit whose card is present on the scanner
- * @param
- * @param
+ * @param rfidTagBuffer: contains the rfid tag uid
+ * @param bufferSize: Size of the rfidTagBuffer
  * @return Returns the unit index whose card is present on the scanner
 */
 UnitIndex ValidateRfidTag(uint8_t* rfidTagBuffer,uint8_t bufferSize)
@@ -232,5 +209,23 @@ UnitIndex ValidateRfidTag(uint8_t* rfidTagBuffer,uint8_t bufferSize)
 */
 void GetPowerParam(UnitIndex unitIndex,float* pwrPtr,float* kwhPtr)
 {
-  
+  if(unitIndex == UNIT_UNKNOWN)
+  {
+    return;
+  }
+  static pwr_t pwr;
+  if(xQueueReceive(nodeToGetPwrParam,&pwr,0) == pdPASS)
+  {
+    Serial.println("Node-GetPowerParam data received");
+  }
+  if(unitIndex == UNIT1)
+  {
+    *pwrPtr = pwr.node1Pwr / 10.0;
+    *kwhPtr = pwr.node1Kwh / 10000;
+  }
+  else if(unitIndex == UNIT2)
+  {
+    *pwrPtr = pwr.node2Pwr / 10.0;
+    *kwhPtr = pwr.node2Kwh / 1000.0;
+  }
 }

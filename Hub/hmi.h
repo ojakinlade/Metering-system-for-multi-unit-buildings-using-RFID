@@ -19,6 +19,8 @@ class HMI
     MFRC522* rfidPtr;
     Keypad* keypadPtr;
     uint8_t rfidBuffer[RFID_BUFFER_SIZE];
+    float pwr;
+    float kwh;
     UnitIndex unitIndex;
     State currentState;
     

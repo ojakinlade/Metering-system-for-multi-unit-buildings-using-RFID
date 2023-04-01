@@ -121,7 +121,6 @@ void HMI::StateFunc_MenuPage(void)
 void HMI::StateFunc_PlaceTagPage(void)
 {
   HMI::DisplayPlaceTagPage();
-  //Add code to get the RFID tag bytes
   if(rfidPtr->PICC_IsNewCardPresent())
   {
     if(rfidPtr->PICC_ReadCardSerial())
@@ -129,7 +128,6 @@ void HMI::StateFunc_PlaceTagPage(void)
       Serial.print(F("RFID Tag UID:"));
       Get_TagID(rfidPtr->uid.uidByte, rfidPtr->uid.size);
       unitIndex = ValidateRfidTag(rfidBuffer,RFID_BUFFER_SIZE);
-      Serial.println(unitIndex);
       if(unitIndex == UNIT_UNKNOWN)
       {
         HMI::DisplayLoginError();
@@ -157,6 +155,13 @@ void HMI::StateFunc_PlaceTagPage(void)
 void HMI::StateFunc_PwrInfoPage(void)
 {
   HMI::DisplayPwrInfoPage();
+  GetPowerParam(unitIndex,&pwr,&kwh);
+  lcdPtr->setCursor(5,1);
+  lcdPtr->print(pwr);
+  lcdPtr->print("W");
+  lcdPtr->setCursor(5,2);
+  lcdPtr->print(kwh);
+  lcdPtr->print("KWh");
   char key = keypadPtr->GetChar();
   switch(key)
   {
@@ -173,6 +178,8 @@ HMI::HMI(LiquidCrystal_I2C* lcdPtr,Keypad* keypadPtr,MFRC522* rfidPtr)
   this->keypadPtr = keypadPtr;
   this->rfidPtr = rfidPtr;
   currentState = ST_MENUPAGE;
+  pwr = 0;
+  kwh = 0;
   for(uint8_t i = 0; i < RFID_BUFFER_SIZE; i++)
   {
     rfidBuffer[i] = 0;
