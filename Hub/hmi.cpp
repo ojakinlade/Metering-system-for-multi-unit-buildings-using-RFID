@@ -83,7 +83,7 @@ void HMI::DisplayPlaceTagPage(void)
 
 void HMI::DisplayPwrInfoPage(void)
 {
-  char heading1[] = "  POWER INFO  ";
+  char heading1[] = "     POWER INFO  ";
   char heading2[] = "PWR: ";
   char heading3[] = "KWH:";
   char heading4[] = "Amount due(N): ";

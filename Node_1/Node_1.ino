@@ -21,7 +21,7 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Smart Metering!!!");
   hc12Serial.listen();
-  hc12.SetChannel(CHANNEL_10);
+  hc12.SetChannel(CHANNEL_15);
 }
 
 void loop() {
@@ -34,8 +34,11 @@ void loop() {
       {
         Serial.println("--Node 1: Query Received");
         pzemSerial.listen();
-        uint16_t pwr = pzem.power() * 10;
-        uint16_t kwh = pzem.energy() * 1000;
+//        uint16_t pwr = pzem.power() * 10;
+//        uint16_t kwh = pzem.energy() * 1000;
+
+        uint16_t pwr = 50 * 10;
+        uint16_t kwh = 0.6 * 1000;
         //Debug
         Serial.print("PWR: ");
         Serial.println(pwr);

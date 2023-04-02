@@ -97,7 +97,7 @@ void ApplicationTask(void* pvParameters)
   lcd.print("--Initializing....");
   delay(2000);
   lcd.clear();
-  //vTaskResume(nodeTaskHandle);
+  vTaskResume(nodeTaskHandle);
    
   for(;;)
   {
@@ -109,12 +109,12 @@ void ApplicationTask(void* pvParameters)
 void NodeTask(void* pvParameters)
 {
   vTaskSuspend(NULL);
-  const uint8_t setPin = 15;
+  const uint8_t setPin = 34;
   static HC12 hc12(&Serial2,setPin);
   static pwr_t pwr;
   uint8_t node = HC12::Node1Addr;
   uint32_t prevTime = millis();
-  hc12.SetChannel(CHANNEL_15);
+ // hc12.SetChannel(CHANNEL_15);
   
   for(;;)
   {
@@ -221,7 +221,7 @@ void GetPowerParam(UnitIndex unitIndex,float* pwrPtr,float* kwhPtr)
   if(unitIndex == UNIT1)
   {
     *pwrPtr = pwr.node1Pwr / 10.0;
-    *kwhPtr = pwr.node1Kwh / 10000;
+    *kwhPtr = pwr.node1Kwh / 1000.0;
   }
   else if(unitIndex == UNIT2)
   {

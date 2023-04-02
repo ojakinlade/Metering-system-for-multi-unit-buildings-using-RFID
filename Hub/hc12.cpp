@@ -14,8 +14,8 @@ HC12::HC12(HardwareSerial* serial,uint8_t Pin,
   port = serial;
   setPin = Pin;
   port->begin(baudRate,SERIAL_8N1,hc12Tx,hc12Rx);
-  pinMode(setPin, OUTPUT);
-  digitalWrite(setPin, HIGH);
+//  pinMode(setPin, OUTPUT);
+//  digitalWrite(setPin, HIGH);
   rxDataCounter = 0;
   for(uint8_t i = 0; i < BufferSize::TX; i++)
   {
