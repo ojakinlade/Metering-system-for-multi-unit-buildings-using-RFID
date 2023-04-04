@@ -1,6 +1,6 @@
 #pragma once
 
-#define CHANNEL_10 "AT+C010\r\n"
+#define CHANNEL_15 "AT+C015\r\n"
 
 class HC12
 {
