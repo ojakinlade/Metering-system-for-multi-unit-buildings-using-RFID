@@ -2,6 +2,14 @@ Master:
 1. Keypad: (Row pins: 2,4,12,13
 	    Column Pins: 14,15,25,26)
 2. LCD: (SDA: 21, SCL: 22)
-3. HC12: (HC12 TX: 16, HC12 RX: 17 --> UART2)
+3. HC12: (HC12 TX: 16, HC12 RX: 17, SET PIN:  --> UART2)
 4. RFID: (VCC: 3.3V, NSS: 5, RST: 27, MOSI: 23
           MISO: 19, SCK: 18)
+
+Node 1
+1. HC12: (TX: 2, RX: 3, SET: 5 Channel: C015)
+2. PZEM004t: (TX: 8, RX: 9)
+
+Node 2
+1. HC12: (TX: 2, RX: 3, SET: 5 Channel: C015)
+2. PZEM004t: (TX: 8, RX: 9)
