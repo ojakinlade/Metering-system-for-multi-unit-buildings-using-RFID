@@ -1,0 +1,264 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title "SMART METERING - NODE SCHEMATICS"
+Date "2023-03-22"
+Rev "1.0"
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L MCU_Module:Arduino_Nano_v3.x A1
+U 1 1 641A4177
+P 5800 3700
+F 0 "A1" H 6150 2750 50  0000 C CNN
+F 1 "Arduino_Nano" H 6200 2650 50  0000 C CNN
+F 2 "Module:Arduino_Nano" H 5800 3700 50  0001 C CIN
+F 3 "http://www.mouser.com/pdfdocs/Gravitech_Arduino_Nano3_0.pdf" H 5800 3700 50  0001 C CNN
+	1    5800 3700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Regulator_Linear:L7805 U1
+U 1 1 641A5798
+P 3150 3300
+F 0 "U1" H 3150 3542 50  0000 C CNN
+F 1 "L7805" H 3150 3451 50  0000 C CNN
+F 2 "" H 3175 3150 50  0001 L CIN
+F 3 "http://www.st.com/content/ccc/resource/technical/document/datasheet/41/4f/b3/b0/12/d4/47/88/CD00000444.pdf/files/CD00000444.pdf/jcr:content/translations/en.CD00000444.pdf" H 3150 3250 50  0001 C CNN
+	1    3150 3300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Battery BT1
+U 1 1 641A6357
+P 2000 3550
+F 0 "BT1" H 2108 3596 50  0000 L CNN
+F 1 "Battery" H 2108 3505 50  0000 L CNN
+F 2 "" V 2000 3610 50  0001 C CNN
+F 3 "~" V 2000 3610 50  0001 C CNN
+	1    2000 3550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x04_Male J2
+U 1 1 641A72F2
+P 8200 4200
+F 0 "J2" H 8300 4550 50  0000 C CNN
+F 1 "PZEM-004T" H 8300 4450 50  0000 C CNN
+F 2 "" H 8200 4200 50  0001 C CNN
+F 3 "~" H 8200 4200 50  0001 C CNN
+	1    8200 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x05_Male J1
+U 1 1 641A8308
+P 8150 3250
+F 0 "J1" H 8250 3700 50  0000 C CNN
+F 1 "HC12" H 8250 3600 50  0000 C CNN
+F 2 "" H 8150 3250 50  0001 C CNN
+F 3 "~" H 8150 3250 50  0001 C CNN
+	1    8150 3250
+	1    0    0    -1  
+$EndComp
+Text GLabel 2000 3200 1    50   Input ~ 0
+7.4V
+Wire Wire Line
+	2000 3200 2000 3300
+Wire Wire Line
+	2850 3300 2350 3300
+Connection ~ 2000 3300
+Wire Wire Line
+	2000 3300 2000 3350
+$Comp
+L power:GND #PWR01
+U 1 1 641ABF64
+P 2000 3900
+F 0 "#PWR01" H 2000 3650 50  0001 C CNN
+F 1 "GND" H 2005 3727 50  0000 C CNN
+F 2 "" H 2000 3900 50  0001 C CNN
+F 3 "" H 2000 3900 50  0001 C CNN
+	1    2000 3900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2000 3900 2000 3800
+$Comp
+L power:GND #PWR02
+U 1 1 641AC40C
+P 3150 3700
+F 0 "#PWR02" H 3150 3450 50  0001 C CNN
+F 1 "GND" H 3155 3527 50  0000 C CNN
+F 2 "" H 3150 3700 50  0001 C CNN
+F 3 "" H 3150 3700 50  0001 C CNN
+	1    3150 3700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3150 3700 3150 3600
+Text GLabel 3600 3300 2    50   Input ~ 0
+5V
+Wire Wire Line
+	3600 3300 3450 3300
+Text GLabel 5700 2550 1    50   Input ~ 0
+7.4V
+Wire Wire Line
+	5700 2550 5700 2700
+$Comp
+L power:GND #PWR03
+U 1 1 641ACF4F
+P 5850 4900
+F 0 "#PWR03" H 5850 4650 50  0001 C CNN
+F 1 "GND" H 5855 4727 50  0000 C CNN
+F 2 "" H 5850 4900 50  0001 C CNN
+F 3 "" H 5850 4900 50  0001 C CNN
+	1    5850 4900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5900 4700 5900 4900
+Wire Wire Line
+	5900 4900 5850 4900
+Wire Wire Line
+	5850 4900 5800 4900
+Wire Wire Line
+	5800 4900 5800 4700
+Connection ~ 5850 4900
+Text GLabel 8500 3050 2    50   Input ~ 0
+5V
+Text GLabel 8500 3250 2    50   Input ~ 0
+HC12_RX
+Text GLabel 8500 3350 2    50   Input ~ 0
+HC12_TX
+Text GLabel 8500 3450 2    50   Input ~ 0
+HC12_SET
+Text GLabel 8550 4100 2    50   Input ~ 0
+5V
+Text GLabel 8550 4200 2    50   Input ~ 0
+PZEM_RX
+Text GLabel 8550 4300 2    50   Input ~ 0
+PZEM_TX
+$Comp
+L power:GND #PWR05
+U 1 1 641AE038
+P 9050 3150
+F 0 "#PWR05" H 9050 2900 50  0001 C CNN
+F 1 "GND" H 9055 2977 50  0000 C CNN
+F 2 "" H 9050 3150 50  0001 C CNN
+F 3 "" H 9050 3150 50  0001 C CNN
+	1    9050 3150
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR04
+U 1 1 641AE4B6
+P 8650 4400
+F 0 "#PWR04" H 8650 4150 50  0001 C CNN
+F 1 "GND" H 8655 4227 50  0000 C CNN
+F 2 "" H 8650 4400 50  0001 C CNN
+F 3 "" H 8650 4400 50  0001 C CNN
+	1    8650 4400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8400 4400 8650 4400
+Wire Wire Line
+	8350 3150 9050 3150
+Wire Wire Line
+	8350 3050 8500 3050
+Wire Wire Line
+	8350 3250 8500 3250
+Wire Wire Line
+	8350 3350 8500 3350
+Wire Wire Line
+	8350 3450 8500 3450
+Wire Wire Line
+	8400 4100 8550 4100
+Wire Wire Line
+	8400 4200 8550 4200
+Wire Wire Line
+	8400 4300 8550 4300
+$Comp
+L power:PWR_FLAG #FLG02
+U 1 1 641AFDDE
+P 2350 3200
+F 0 "#FLG02" H 2350 3275 50  0001 C CNN
+F 1 "PWR_FLAG" H 2350 3373 50  0000 C CNN
+F 2 "" H 2350 3200 50  0001 C CNN
+F 3 "~" H 2350 3200 50  0001 C CNN
+	1    2350 3200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2350 3200 2350 3300
+Connection ~ 2350 3300
+Wire Wire Line
+	2350 3300 2000 3300
+$Comp
+L power:PWR_FLAG #FLG01
+U 1 1 641B0774
+P 2250 3800
+F 0 "#FLG01" H 2250 3875 50  0001 C CNN
+F 1 "PWR_FLAG" V 2250 3928 50  0000 L CNN
+F 2 "" H 2250 3800 50  0001 C CNN
+F 3 "~" H 2250 3800 50  0001 C CNN
+	1    2250 3800
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2250 3800 2000 3800
+Connection ~ 2000 3800
+Wire Wire Line
+	2000 3800 2000 3750
+NoConn ~ 6300 4400
+NoConn ~ 6300 4300
+NoConn ~ 6300 4200
+NoConn ~ 6300 4100
+NoConn ~ 6300 4000
+NoConn ~ 6300 3900
+NoConn ~ 6300 3800
+NoConn ~ 6300 3700
+NoConn ~ 6300 3500
+NoConn ~ 6300 3200
+NoConn ~ 6300 3100
+NoConn ~ 6000 2700
+NoConn ~ 5900 2700
+NoConn ~ 5300 4400
+NoConn ~ 5300 4300
+NoConn ~ 5300 4200
+NoConn ~ 5300 4100
+NoConn ~ 5300 3800
+NoConn ~ 5300 3700
+NoConn ~ 5300 3500
+NoConn ~ 5300 3200
+NoConn ~ 5300 3100
+Text GLabel 5100 3600 0    50   Input ~ 0
+HC12_SET
+Text GLabel 5100 3400 0    50   Input ~ 0
+HC12_RX
+Text GLabel 5100 3300 0    50   Input ~ 0
+HC12_TX
+Text GLabel 5150 3900 0    50   Input ~ 0
+PZEM_TX
+Text GLabel 5150 4000 0    50   Input ~ 0
+PZEM_RX
+Wire Wire Line
+	5150 4000 5300 4000
+Wire Wire Line
+	5150 3900 5300 3900
+Wire Wire Line
+	5100 3600 5300 3600
+Wire Wire Line
+	5100 3400 5300 3400
+Wire Wire Line
+	5100 3300 5300 3300
+Text Notes 2950 1600 0    138  Italic 28
+SMART METERING SYSTEM - NODE SCHEMATICS
+$EndSCHEMATC

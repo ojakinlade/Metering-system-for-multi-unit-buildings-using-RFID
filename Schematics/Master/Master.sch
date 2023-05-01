@@ -1,0 +1,458 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L RF_Module:ESP32-WROOM-32D U3
+U 1 1 64334E4C
+P 5650 3600
+F 0 "U3" H 6150 5050 50  0000 C CNN
+F 1 "ESP32-WROOM-32D" H 6150 4950 50  0000 C CNN
+F 2 "RF_Module:ESP32-WROOM-32" H 5650 2100 50  0001 C CNN
+F 3 "https://www.espressif.com/sites/default/files/documentation/esp32-wroom-32d_esp32-wroom-32u_datasheet_en.pdf" H 5350 3650 50  0001 C CNN
+	1    5650 3600
+	1    0    0    -1  
+$EndComp
+$Comp
+L Regulator_Linear:LM7805_TO220 U1
+U 1 1 6433BCEB
+P 2950 2550
+F 0 "U1" H 2950 2792 50  0000 C CNN
+F 1 "LM2596" H 2950 2701 50  0000 C CNN
+F 2 "Package_TO_SOT_THT:TO-220-3_Vertical" H 2950 2775 50  0001 C CIN
+F 3 "https://www.onsemi.cn/PowerSolutions/document/MC7800-D.PDF" H 2950 2500 50  0001 C CNN
+	1    2950 2550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:Battery BT1
+U 1 1 6433F2A9
+P 1400 3100
+F 0 "BT1" H 1508 3146 50  0000 L CNN
+F 1 "Battery" H 1508 3055 50  0000 L CNN
+F 2 "" V 1400 3160 50  0001 C CNN
+F 3 "~" V 1400 3160 50  0001 C CNN
+	1    1400 3100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Display_Character:NHD-0420H1Z U5
+U 1 1 6434195C
+P 9700 2800
+F 0 "U5" H 9950 2050 50  0000 C CNN
+F 1 "LCD_20_4" H 10050 1950 50  0000 C CNN
+F 2 "Display:NHD-0420H1Z" H 9700 1900 50  0001 C CNN
+F 3 "http://www.newhavendisplay.com/specs/NHD-0420H1Z-FSW-GBW-33V3.pdf" H 9800 2700 50  0001 C CNN
+	1    9700 2800
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector:Conn_01x05_Male J1
+U 1 1 64343059
+P 9000 4900
+F 0 "J1" H 9108 5281 50  0000 C CNN
+F 1 "HC-12" H 9108 5190 50  0000 C CNN
+F 2 "" H 9000 4900 50  0001 C CNN
+F 3 "~" H 9000 4900 50  0001 C CNN
+	1    9000 4900
+	1    0    0    -1  
+$EndComp
+$Comp
+L Regulator_Linear:LM7805_TO220 U2
+U 1 1 64344BA6
+P 2950 3300
+F 0 "U2" H 2950 3542 50  0000 C CNN
+F 1 "LM7805" H 2950 3451 50  0000 C CNN
+F 2 "Package_TO_SOT_THT:TO-220-3_Vertical" H 2950 3525 50  0001 C CIN
+F 3 "https://www.onsemi.cn/PowerSolutions/document/MC7800-D.PDF" H 2950 3250 50  0001 C CNN
+	1    2950 3300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1400 2900 1400 2550
+Wire Wire Line
+	1400 2550 2150 2550
+Wire Wire Line
+	2650 3300 2150 3300
+Wire Wire Line
+	2150 3300 2150 2550
+Connection ~ 2150 2550
+Wire Wire Line
+	2150 2550 2650 2550
+Wire Wire Line
+	3250 2550 3400 2550
+Wire Wire Line
+	3550 2550 3550 2000
+Wire Wire Line
+	3550 2000 5650 2000
+Wire Wire Line
+	5650 2000 5650 2200
+Text GLabel 3400 3300 2    50   Input ~ 0
+5V
+Wire Wire Line
+	3400 3300 3250 3300
+Text GLabel 9350 4700 2    50   Input ~ 0
+5V
+Wire Wire Line
+	9350 4700 9200 4700
+Text GLabel 9350 4900 2    50   Input ~ 0
+HC12_RX
+Wire Wire Line
+	9350 4900 9200 4900
+Text GLabel 9350 5000 2    50   Input ~ 0
+HC12_TX
+Wire Wire Line
+	9350 5000 9200 5000
+Text GLabel 9350 5100 2    50   Input ~ 0
+HC12_SET
+Wire Wire Line
+	9350 5100 9200 5100
+$Comp
+L power:GND #PWR05
+U 1 1 64348D80
+P 10000 4850
+F 0 "#PWR05" H 10000 4600 50  0001 C CNN
+F 1 "GND" H 10005 4677 50  0000 C CNN
+F 2 "" H 10000 4850 50  0001 C CNN
+F 3 "" H 10000 4850 50  0001 C CNN
+	1    10000 4850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9200 4800 10000 4800
+Wire Wire Line
+	10000 4800 10000 4850
+$Comp
+L power:GND #PWR03
+U 1 1 643495A1
+P 5650 5150
+F 0 "#PWR03" H 5650 4900 50  0001 C CNN
+F 1 "GND" H 5655 4977 50  0000 C CNN
+F 2 "" H 5650 5150 50  0001 C CNN
+F 3 "" H 5650 5150 50  0001 C CNN
+	1    5650 5150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5650 5150 5650 5000
+$Comp
+L power:GND #PWR02
+U 1 1 64349FEB
+P 2950 3700
+F 0 "#PWR02" H 2950 3450 50  0001 C CNN
+F 1 "GND" H 2955 3527 50  0000 C CNN
+F 2 "" H 2950 3700 50  0001 C CNN
+F 3 "" H 2950 3700 50  0001 C CNN
+	1    2950 3700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2950 3700 2950 3650
+Wire Wire Line
+	2950 2850 2450 2850
+Wire Wire Line
+	2450 2850 2450 3650
+Wire Wire Line
+	2450 3650 2950 3650
+Connection ~ 2950 3650
+Wire Wire Line
+	2950 3650 2950 3600
+$Comp
+L power:GND #PWR01
+U 1 1 6434AE36
+P 1400 3450
+F 0 "#PWR01" H 1400 3200 50  0001 C CNN
+F 1 "GND" H 1405 3277 50  0000 C CNN
+F 2 "" H 1400 3450 50  0001 C CNN
+F 3 "" H 1400 3450 50  0001 C CNN
+	1    1400 3450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1400 3300 1400 3450
+NoConn ~ 5050 2400
+NoConn ~ 5050 2600
+NoConn ~ 5050 2700
+NoConn ~ 5050 3600
+NoConn ~ 5050 3700
+NoConn ~ 5050 3800
+NoConn ~ 5050 3900
+NoConn ~ 5050 4000
+NoConn ~ 5050 4100
+NoConn ~ 6250 2400
+NoConn ~ 6250 2500
+NoConn ~ 6250 2600
+NoConn ~ 6250 2700
+NoConn ~ 6250 2800
+Text GLabel 6450 3400 2    50   Input ~ 0
+HC12_TX
+Wire Wire Line
+	6450 3400 6250 3400
+Text GLabel 6450 3500 2    50   Input ~ 0
+HC12_RX
+Wire Wire Line
+	6450 3500 6250 3500
+Text GLabel 6450 3300 2    50   Input ~ 0
+HC12_SET
+Wire Wire Line
+	6450 3300 6250 3300
+Text GLabel 6500 3800 2    50   Input ~ 0
+SDA
+Wire Wire Line
+	6500 3800 6250 3800
+Text GLabel 6500 3900 2    50   Input ~ 0
+SCL
+Wire Wire Line
+	6500 3900 6250 3900
+NoConn ~ 6250 3000
+NoConn ~ 6250 3100
+NoConn ~ 6250 3200
+NoConn ~ 6250 4100
+NoConn ~ 6250 4200
+NoConn ~ 6250 4400
+NoConn ~ 6250 4500
+NoConn ~ 6250 4600
+NoConn ~ 6250 4700
+$Comp
+L power:PWR_FLAG #FLG01
+U 1 1 64352AEB
+P 2150 2400
+F 0 "#FLG01" H 2150 2475 50  0001 C CNN
+F 1 "PWR_FLAG" H 2150 2573 50  0000 C CNN
+F 2 "" H 2150 2400 50  0001 C CNN
+F 3 "~" H 2150 2400 50  0001 C CNN
+	1    2150 2400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2150 2400 2150 2550
+$Comp
+L Interface_Expansion:PCF8574 U4
+U 1 1 64353E56
+P 8250 3100
+F 0 "U4" H 7950 3850 50  0000 C CNN
+F 1 "PCF8574" H 7950 3750 50  0000 C CNN
+F 2 "" H 8250 3100 50  0001 C CNN
+F 3 "http://www.nxp.com/documents/data_sheet/PCF8574_PCF8574A.pdf" H 8250 3100 50  0001 C CNN
+	1    8250 3100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8750 3100 9300 3100
+Wire Wire Line
+	8750 3200 9300 3200
+Wire Wire Line
+	8750 3300 9300 3300
+Wire Wire Line
+	8750 3400 9300 3400
+Wire Wire Line
+	9700 3600 9700 4000
+Wire Wire Line
+	9700 4000 9100 4000
+$Comp
+L power:GND #PWR04
+U 1 1 6435BC06
+P 9100 4100
+F 0 "#PWR04" H 9100 3850 50  0001 C CNN
+F 1 "GND" H 9105 3927 50  0000 C CNN
+F 2 "" H 9100 4100 50  0001 C CNN
+F 3 "" H 9100 4100 50  0001 C CNN
+	1    9100 4100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9100 4100 9100 4000
+Connection ~ 9100 4000
+Wire Wire Line
+	9100 4000 8250 4000
+NoConn ~ 7750 3500
+Wire Wire Line
+	8750 2700 8800 2700
+Wire Wire Line
+	8800 2700 8800 2200
+Wire Wire Line
+	8800 2200 9300 2200
+Wire Wire Line
+	8750 2800 8900 2800
+Wire Wire Line
+	8900 2800 8900 2300
+Wire Wire Line
+	8900 2300 9300 2300
+Wire Wire Line
+	8750 2900 9000 2900
+Wire Wire Line
+	9000 2900 9000 2400
+Wire Wire Line
+	9000 2400 9300 2400
+NoConn ~ 8750 3000
+NoConn ~ 9300 2700
+NoConn ~ 9300 2800
+NoConn ~ 9300 2900
+NoConn ~ 9300 3000
+Text GLabel 7650 2700 0    50   Input ~ 0
+SCL
+Wire Wire Line
+	7650 2700 7750 2700
+Text GLabel 7650 2800 0    50   Input ~ 0
+SDA
+Wire Wire Line
+	7650 2800 7750 2800
+Wire Wire Line
+	7750 3000 7600 3000
+Wire Wire Line
+	7600 3000 7600 3100
+Wire Wire Line
+	7600 3200 7750 3200
+Wire Wire Line
+	7750 3100 7600 3100
+Connection ~ 7600 3100
+Wire Wire Line
+	7600 3100 7600 3200
+Wire Wire Line
+	8250 4000 8250 3800
+Wire Wire Line
+	7600 4000 8250 4000
+Connection ~ 7600 3200
+Wire Wire Line
+	7600 3200 7600 4000
+Connection ~ 8250 4000
+Wire Wire Line
+	8250 2400 8250 1650
+Wire Wire Line
+	8250 1650 9700 1650
+Wire Wire Line
+	9700 1650 9700 2000
+Wire Wire Line
+	10100 3100 10400 3100
+Wire Wire Line
+	10400 3100 10400 1650
+Wire Wire Line
+	10400 1650 9700 1650
+Connection ~ 9700 1650
+Wire Wire Line
+	10100 3000 10500 3000
+Wire Wire Line
+	10500 3000 10500 4000
+Wire Wire Line
+	10500 4000 9700 4000
+Connection ~ 9700 4000
+Wire Wire Line
+	9800 2000 10500 2000
+Wire Wire Line
+	10500 2000 10500 3000
+Connection ~ 10500 3000
+$Comp
+L power:PWR_FLAG #FLG0101
+U 1 1 64370F2B
+P 3100 3650
+F 0 "#FLG0101" H 3100 3725 50  0001 C CNN
+F 1 "PWR_FLAG" V 3100 3778 50  0000 L CNN
+F 2 "" H 3100 3650 50  0001 C CNN
+F 3 "~" H 3100 3650 50  0001 C CNN
+	1    3100 3650
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3100 3650 2950 3650
+Text GLabel 9700 1500 1    50   Input ~ 0
+5V
+Wire Wire Line
+	9700 1500 9700 1650
+Text Notes 1750 4350 0    118  Italic 24
+PWR SUPPLY
+Text Notes 5200 5750 0    118  Italic 24
+ESP32 MCU
+Text Notes 10000 1450 0    118  Italic 24
+LCD
+Text Notes 8700 5500 0    118  Italic 24
+HC12 Transceiver
+$Comp
+L Connector:Conn_01x08_Male J2
+U 1 1 6433D769
+P 2750 5450
+F 0 "J2" H 2858 5931 50  0000 C CNN
+F 1 "RFID" H 2858 5840 50  0000 C CNN
+F 2 "" H 2750 5450 50  0001 C CNN
+F 3 "~" H 2750 5450 50  0001 C CNN
+	1    2750 5450
+	1    0    0    -1  
+$EndComp
+Text GLabel 3100 5150 2    50   Input ~ 0
+3.3V
+Wire Wire Line
+	3100 5150 2950 5150
+Text GLabel 3100 5550 2    50   Input ~ 0
+MOSI
+Text GLabel 3100 5650 2    50   Input ~ 0
+MISO
+Text GLabel 3100 5750 2    50   Input ~ 0
+SCK
+Text GLabel 3100 5850 2    50   Input ~ 0
+NSS
+Wire Wire Line
+	3100 5850 2950 5850
+Wire Wire Line
+	3100 5750 2950 5750
+Wire Wire Line
+	3100 5650 2950 5650
+Wire Wire Line
+	3100 5550 2950 5550
+Wire Wire Line
+	3100 5250 2950 5250
+$Comp
+L power:GND #PWR06
+U 1 1 6434B2ED
+P 3450 5350
+F 0 "#PWR06" H 3450 5100 50  0001 C CNN
+F 1 "GND" H 3455 5177 50  0000 C CNN
+F 2 "" H 3450 5350 50  0001 C CNN
+F 3 "" H 3450 5350 50  0001 C CNN
+	1    3450 5350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2950 5350 3450 5350
+Text Notes 2800 6250 0    118  Italic 24
+RFID
+Text GLabel 3400 2450 1    50   Input ~ 0
+3.3V
+Wire Wire Line
+	3400 2450 3400 2550
+Connection ~ 3400 2550
+Wire Wire Line
+	3400 2550 3550 2550
+Text GLabel 6450 2900 2    50   Input ~ 0
+NSS
+Wire Wire Line
+	6450 2900 6250 2900
+Text GLabel 6500 4300 2    50   Input ~ 0
+RST
+Wire Wire Line
+	6500 4300 6250 4300
+Text GLabel 6500 4000 2    50   Input ~ 0
+MOSI
+Wire Wire Line
+	6500 4000 6250 4000
+Text GLabel 6500 3700 2    50   Input ~ 0
+MISO
+Wire Wire Line
+	6500 3700 6250 3700
+Text GLabel 6500 3600 2    50   Input ~ 0
+SCK
+Wire Wire Line
+	6500 3600 6250 3600
+Text GLabel 3100 5250 2    50   Input ~ 0
+RST
+NoConn ~ 2950 5450
+$EndSCHEMATC
