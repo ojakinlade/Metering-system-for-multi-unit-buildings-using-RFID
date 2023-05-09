@@ -19,6 +19,7 @@ class HMI
     MFRC522* rfidPtr;
     Keypad* keypadPtr;
     uint8_t rfidBuffer[RFID_BUFFER_SIZE];
+    uint16_t unitsAvailable;
     float pwr;
     float kwh;
     UnitIndex unitIndex;
@@ -26,7 +27,7 @@ class HMI
     
     //Function pointers
     UnitIndex(*ValidateRfidTag)(uint8_t*,uint8_t);
-    void(*GetPowerParam)(UnitIndex,float*,float*);
+    void(*GetPowerParam)(UnitIndex,float*,float*,uint16_t*);
     
     //RFID methods
     void Get_TagID(uint8_t* IdBuffer, uint8_t bufferSize); 
@@ -48,5 +49,5 @@ class HMI
     HMI(LiquidCrystal_I2C* lcdPtr,Keypad* keypadPtr,MFRC522* rfidPtr);
     void Execute(void);
     void RegisterCallback(UnitIndex(*ValidateRfidTag)(uint8_t*,uint8_t));
-    void RegisterCallback(void(*GetPowerParam)(UnitIndex,float*,float*));
+    void RegisterCallback(void(*GetPowerParam)(UnitIndex,float*,float*,uint16_t*));
 };

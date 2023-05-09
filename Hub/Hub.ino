@@ -12,21 +12,8 @@
 #define ARDUINO_RUNNING_CORE  1
 #endif
 
-/*
- * Pinouts
- * RFID      |      ESP32
- * VCC       |        3.3v
- * GND       |        GND
- * NSS       |        5
- * RST       |        27
- * MOSI      |        23
- * MISO      |        19
- * SCK       |        18
-*/
-
 #define SS_PIN 5
 #define RST_PIN 27
-
 
 const uint8_t unit1_ID[4] = {0x64,0xFA,0x76,0x89};
 const uint8_t unit2_ID[4] = {0x2C,0x5A,0xAE,0x49};
@@ -41,6 +28,8 @@ typedef struct
   uint16_t node1Kwh;
   uint16_t node2Pwr;
   uint16_t node2Kwh;
+  uint16_t node1Units;
+  uint16_t node2Units;
 }pwr_t;
 
 void setup() {
@@ -207,7 +196,7 @@ UnitIndex ValidateRfidTag(uint8_t* rfidTagBuffer,uint8_t bufferSize)
  * @param
  * @param
 */
-void GetPowerParam(UnitIndex unitIndex,float* pwrPtr,float* kwhPtr)
+void GetPowerParam(UnitIndex unitIndex,float* pwrPtr,float* kwhPtr,uint16_t* unitsAvailablePtr)
 {
   if(unitIndex == UNIT_UNKNOWN)
   {
@@ -228,4 +217,5 @@ void GetPowerParam(UnitIndex unitIndex,float* pwrPtr,float* kwhPtr)
     *pwrPtr = pwr.node2Pwr / 10.0;
     *kwhPtr = pwr.node2Kwh / 1000.0;
   }
+  //Add code to get Available units from EEPROM
 }

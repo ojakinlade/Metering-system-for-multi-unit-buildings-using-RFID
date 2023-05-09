@@ -84,9 +84,9 @@ void HMI::DisplayPlaceTagPage(void)
 void HMI::DisplayPwrInfoPage(void)
 {
   char heading1[] = "     POWER INFO  ";
-  char heading2[] = "PWR: ";
-  char heading3[] = "KWH:";
-  char heading4[] = "Amount due(N): ";
+  char heading2[] = "Units: ";
+  char heading3[] = "PWR: ";
+  char heading4[] = "KWH: ";
   char* heading[] = {heading1,heading2,heading3,heading4};
   HMI::DisplayRowHeadings(heading);
 }
@@ -155,11 +155,13 @@ void HMI::StateFunc_PlaceTagPage(void)
 void HMI::StateFunc_PwrInfoPage(void)
 {
   HMI::DisplayPwrInfoPage();
-  GetPowerParam(unitIndex,&pwr,&kwh);
-  lcdPtr->setCursor(5,1);
+  GetPowerParam(unitIndex,&pwr,&kwh,&unitsAvailable);
+  lcdPtr->setCursor(7,1);
+  lcdPtr->print(unitsAvailable);
+  lcdPtr->setCursor(5,2);
   lcdPtr->print(pwr);
   lcdPtr->print("W");
-  lcdPtr->setCursor(5,2);
+  lcdPtr->setCursor(5,3);
   lcdPtr->print(kwh);
   lcdPtr->print("KWh");
   char key = keypadPtr->GetChar();
@@ -180,6 +182,8 @@ HMI::HMI(LiquidCrystal_I2C* lcdPtr,Keypad* keypadPtr,MFRC522* rfidPtr)
   currentState = ST_MENUPAGE;
   pwr = 0;
   kwh = 0;
+  unitsAvailable = 20;
+  //Store in EEPROM and read the value subsequently
   for(uint8_t i = 0; i < RFID_BUFFER_SIZE; i++)
   {
     rfidBuffer[i] = 0;
@@ -212,7 +216,7 @@ void HMI::RegisterCallback(UnitIndex(*ValidateRfidTag)(uint8_t*,uint8_t))
   Serial.println("Successfully registered <ValidateRfid> callback");
 }
 
-void HMI::RegisterCallback(void(*GetPowerParam)(UnitIndex,float*,float*))
+void HMI::RegisterCallback(void(*GetPowerParam)(UnitIndex,float*,float*,uint16_t*))
 {
   this->GetPowerParam = GetPowerParam;
   Serial.println("Successfully registered <GetPowerParam> callback");
