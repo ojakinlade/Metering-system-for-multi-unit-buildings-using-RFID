@@ -1,6 +1,7 @@
 #include <SPI.h>
 #include <MFRC522.h>
 #include <LiquidCrystal_I2C.h>
+#include <Preferences.h>
 #include "keypad.h"
 #include "hc12.h"
 #include "hmi.h"
@@ -22,6 +23,8 @@ const uint8_t unit2_ID[4] = {0x2C,0x5A,0xAE,0x49};
 TaskHandle_t nodeTaskHandle;
 QueueHandle_t nodeToGetPwrParam;
 
+Preferences preferences;
+
 typedef struct
 {
   uint16_t node1Pwr;
@@ -36,6 +39,9 @@ void setup() {
   // put your setup code here, to run once:
   setCpuFrequencyMhz(80);
   Serial.begin(115200);
+  preferences.begin("Metering",false);
+  preferences.putUShort("0",20);
+  preferences.putUShort("2",20);
   //Create Tasks
   xTaskCreatePinnedToCore(ApplicationTask,"",30000,NULL,1,NULL,ARDUINO_RUNNING_CORE);
   xTaskCreatePinnedToCore(NodeTask,"",7000,NULL,1,&nodeTaskHandle,ARDUINO_RUNNING_CORE);
@@ -196,7 +202,7 @@ UnitIndex ValidateRfidTag(uint8_t* rfidTagBuffer,uint8_t bufferSize)
  * @param
  * @param
 */
-void GetPowerParam(UnitIndex unitIndex,float* pwrPtr,float* kwhPtr,uint16_t* unitsAvailablePtr)
+void GetPowerParam(UnitIndex unitIndex,float* pwrPtr,float* kwhPtr,float* prevKwhPtr,uint16_t* unitsAvailablePtr)
 {
   if(unitIndex == UNIT_UNKNOWN)
   {
@@ -211,11 +217,29 @@ void GetPowerParam(UnitIndex unitIndex,float* pwrPtr,float* kwhPtr,uint16_t* uni
   {
     *pwrPtr = pwr.node1Pwr / 10.0;
     *kwhPtr = pwr.node1Kwh / 1000.0;
+     preferences.getUShort("0",*unitsAvailablePtr);
+     preferences.getFloat("1",*prevKwhPtr);
+     if((lround(*kwhPtr*1000) - lround(*prevKwhPtr*1000)) >= 1000)
+     {
+       *unitsAvailablePtr--;
+       *prevKwhPtr = *kwhPtr;
+       preferences.putUShort("0",*unitsAvailablePtr);
+       preferences.putFloat("1",*prevKwhPtr);
+     }
   }
   else if(unitIndex == UNIT2)
   {
     *pwrPtr = pwr.node2Pwr / 10.0;
     *kwhPtr = pwr.node2Kwh / 1000.0;
+     preferences.getUShort("2",*unitsAvailablePtr);
+     preferences.getFloat("3",*prevKwhPtr);
+     if((lround(*kwhPtr*1000) - lround(*prevKwhPtr*1000)) >= 1000)
+     {
+       *unitsAvailablePtr--;
+       *prevKwhPtr = *kwhPtr; 
+       preferences.putUShort("2",*unitsAvailablePtr);
+       preferences.putFloat("3",*prevKwhPtr);
+     }
   }
-  //Add code to get Available units from EEPROM
+  
 }

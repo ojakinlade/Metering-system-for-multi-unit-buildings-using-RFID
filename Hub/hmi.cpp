@@ -155,7 +155,8 @@ void HMI::StateFunc_PlaceTagPage(void)
 void HMI::StateFunc_PwrInfoPage(void)
 {
   HMI::DisplayPwrInfoPage();
-  GetPowerParam(unitIndex,&pwr,&kwh,&unitsAvailable);
+  GetPowerParam(unitIndex,&pwr,&kwh,&prevKwh,&unitsAvailable);
+  
   lcdPtr->setCursor(7,1);
   lcdPtr->print(unitsAvailable);
   lcdPtr->setCursor(5,2);
@@ -182,8 +183,6 @@ HMI::HMI(LiquidCrystal_I2C* lcdPtr,Keypad* keypadPtr,MFRC522* rfidPtr)
   currentState = ST_MENUPAGE;
   pwr = 0;
   kwh = 0;
-  unitsAvailable = 20;
-  //Store in EEPROM and read the value subsequently
   for(uint8_t i = 0; i < RFID_BUFFER_SIZE; i++)
   {
     rfidBuffer[i] = 0;
@@ -216,7 +215,7 @@ void HMI::RegisterCallback(UnitIndex(*ValidateRfidTag)(uint8_t*,uint8_t))
   Serial.println("Successfully registered <ValidateRfid> callback");
 }
 
-void HMI::RegisterCallback(void(*GetPowerParam)(UnitIndex,float*,float*,uint16_t*))
+void HMI::RegisterCallback(void(*GetPowerParam)(UnitIndex,float*,float*,float*,uint16_t*))
 {
   this->GetPowerParam = GetPowerParam;
   Serial.println("Successfully registered <GetPowerParam> callback");
