@@ -40,8 +40,8 @@ void setup() {
   setCpuFrequencyMhz(80);
   Serial.begin(115200);
   preferences.begin("Metering",false);
-  preferences.putUShort("0",20);
-  preferences.putUShort("2",20);
+//  preferences.putUShort("0",20);
+//  preferences.putUShort("2",20);
   //Create Tasks
   xTaskCreatePinnedToCore(ApplicationTask,"",30000,NULL,1,NULL,ARDUINO_RUNNING_CORE);
   xTaskCreatePinnedToCore(NodeTask,"",7000,NULL,1,&nodeTaskHandle,ARDUINO_RUNNING_CORE);
@@ -217,8 +217,8 @@ void GetPowerParam(UnitIndex unitIndex,float* pwrPtr,float* kwhPtr,float* prevKw
   {
     *pwrPtr = pwr.node1Pwr / 10.0;
     *kwhPtr = pwr.node1Kwh / 1000.0;
-     preferences.getUShort("0",*unitsAvailablePtr);
-     preferences.getFloat("1",*prevKwhPtr);
+    *unitsAvailablePtr = preferences.getUShort("0",0);
+    *prevKwhPtr = preferences.getFloat("1",0);
      if((lround(*kwhPtr*1000) - lround(*prevKwhPtr*1000)) >= 1000)
      {
        *unitsAvailablePtr--;
@@ -231,15 +231,15 @@ void GetPowerParam(UnitIndex unitIndex,float* pwrPtr,float* kwhPtr,float* prevKw
   {
     *pwrPtr = pwr.node2Pwr / 10.0;
     *kwhPtr = pwr.node2Kwh / 1000.0;
-     preferences.getUShort("2",*unitsAvailablePtr);
-     preferences.getFloat("3",*prevKwhPtr);
-     if((lround(*kwhPtr*1000) - lround(*prevKwhPtr*1000)) >= 1000)
-     {
-       *unitsAvailablePtr--;
-       *prevKwhPtr = *kwhPtr; 
-       preferences.putUShort("2",*unitsAvailablePtr);
-       preferences.putFloat("3",*prevKwhPtr);
-     }
+    *unitsAvailablePtr = preferences.getUShort("2",0);
+    *prevKwhPtr = preferences.getFloat("3",0);
+    if((lround(*kwhPtr*1000) - lround(*prevKwhPtr*1000)) >= 1000)
+    {
+      *unitsAvailablePtr--;
+      *prevKwhPtr = *kwhPtr; 
+      preferences.putUShort("2",*unitsAvailablePtr);
+      preferences.putFloat("3",*prevKwhPtr);
+    }
   }
   
 }

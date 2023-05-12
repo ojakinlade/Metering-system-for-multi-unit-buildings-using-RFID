@@ -159,12 +159,13 @@ void HMI::StateFunc_PwrInfoPage(void)
   
   lcdPtr->setCursor(7,1);
   lcdPtr->print(unitsAvailable);
+  lcdPtr->print("KWh ");
   lcdPtr->setCursor(5,2);
   lcdPtr->print(pwr);
-  lcdPtr->print("W");
+  lcdPtr->print("W ");
   lcdPtr->setCursor(5,3);
   lcdPtr->print(kwh);
-  lcdPtr->print("KWh");
+  lcdPtr->print("KWh ");
   char key = keypadPtr->GetChar();
   switch(key)
   {
@@ -183,6 +184,8 @@ HMI::HMI(LiquidCrystal_I2C* lcdPtr,Keypad* keypadPtr,MFRC522* rfidPtr)
   currentState = ST_MENUPAGE;
   pwr = 0;
   kwh = 0;
+  unitsAvailable = 0;
+  prevKwh = 0.0;
   for(uint8_t i = 0; i < RFID_BUFFER_SIZE; i++)
   {
     rfidBuffer[i] = 0;
