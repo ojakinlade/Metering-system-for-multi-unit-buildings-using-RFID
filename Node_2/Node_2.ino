@@ -34,10 +34,8 @@ void loop() {
       {
         Serial.println("--Node 2: Query Received");
         pzemSerial.listen();
-//        uint16_t pwr = pzem.power() * 10;
-//        uint16_t kwh = pzem.energy() * 1000;
-        uint16_t pwr = 74 * 10;
-        uint16_t kwh = 8 * 1000;
+        uint16_t pwr = pzem.power() * 10;
+        uint16_t kwh = pzem.energy() * 1000;
         //Debug
         Serial.print("PWR: ");
         Serial.println(pwr);
