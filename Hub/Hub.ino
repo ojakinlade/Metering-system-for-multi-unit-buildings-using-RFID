@@ -41,7 +41,7 @@ void setup() {
   Serial.begin(115200);
   preferences.begin("Metering",false);
 //  preferences.putUShort("0",20);
-//  preferences.putUShort("2",20);
+//  preferences.putUShort("2",19);
   //Create Tasks
   xTaskCreatePinnedToCore(ApplicationTask,"",30000,NULL,1,NULL,ARDUINO_RUNNING_CORE);
   xTaskCreatePinnedToCore(NodeTask,"",7000,NULL,1,&nodeTaskHandle,ARDUINO_RUNNING_CORE);
@@ -219,13 +219,14 @@ void GetPowerParam(UnitIndex unitIndex,float* pwrPtr,float* kwhPtr,float* prevKw
     *kwhPtr = pwr.node1Kwh / 1000.0;
     *unitsAvailablePtr = preferences.getUShort("0",0);
     *prevKwhPtr = preferences.getFloat("1",0);
-     if((lround(*kwhPtr*1000) - lround(*prevKwhPtr*1000)) >= 1000)
-     {
-       *unitsAvailablePtr--;
-       *prevKwhPtr = *kwhPtr;
-       preferences.putUShort("0",*unitsAvailablePtr);
-       preferences.putFloat("1",*prevKwhPtr);
-     }
+    if((lround(*kwhPtr*1000) - lround(*prevKwhPtr*1000)) >= 1000)
+    {
+      
+      *unitsAvailablePtr = *unitsAvailablePtr - 1;
+      *prevKwhPtr = *kwhPtr;
+      preferences.putUShort("0",*unitsAvailablePtr);
+      preferences.putFloat("1",*prevKwhPtr);
+    }
   }
   else if(unitIndex == UNIT2)
   {
@@ -235,11 +236,10 @@ void GetPowerParam(UnitIndex unitIndex,float* pwrPtr,float* kwhPtr,float* prevKw
     *prevKwhPtr = preferences.getFloat("3",0);
     if((lround(*kwhPtr*1000) - lround(*prevKwhPtr*1000)) >= 1000)
     {
-      *unitsAvailablePtr--;
+      *unitsAvailablePtr = *unitsAvailablePtr - 1;
       *prevKwhPtr = *kwhPtr; 
       preferences.putUShort("2",*unitsAvailablePtr);
       preferences.putFloat("3",*prevKwhPtr);
     }
-  }
-  
+  } 
 }
